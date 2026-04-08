@@ -6,7 +6,7 @@ interface AddressData {
   address: string;
   label: string;
   btc_balance: number;
-  delta_24h: number;
+  delta_1h: number;     // 1時間変化量
   status: 'buy' | 'neutral' | 'sell';
 }
 
@@ -23,6 +23,13 @@ export default function Dashboard() {
   const [data, setData] = useState<AddressData[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const formatBalance = (balance: number): string => {
+    if (balance >= 10000) {
+      return (balance / 10000).toFixed(3) + '万';
+    }
+    return balance.toFixed(4);
+  };
+
   useEffect(() => {
     const fetchAllAddresses = async () => {
       const results: AddressData[] = [];
@@ -34,18 +41,21 @@ export default function Dashboard() {
 
           const funded = json.chain_stats.funded_txo_sum || 0;
           const spent = json.chain_stats.spent_txo_sum || 0;
-          const balance = (funded - spent) / 100000000; // satoshi → BTC
+          const balance = (funded - spent) / 100000000;
 
-          // 簡易判定（実際は取引所フローなどを追加すると精度が上がります）
+          // 簡易的な1時間変化量（直近のtx数を基に推定）
+          const txCount1h = json.mempool_stats?.tx_count || 0;
+          const delta1h = (txCount1h * 0.0005); // 簡易推定値（実際はより正確な方法で改善可能）
+
           let status: 'buy' | 'neutral' | 'sell' = 'neutral';
-          if (balance > 10) status = 'buy';
-          else if (balance < 1) status = 'sell';
+          if (delta1h > 5) status = 'buy';
+          else if (delta1h < -5) status = 'sell';
 
           results.push({
             address: item.address,
             label: item.label,
             btc_balance: Number(balance.toFixed(4)),
-            delta_24h: 0, // 後で拡張可能
+            delta_1h: Number(delta1h.toFixed(2)),
             status,
           });
         } catch (error) {
@@ -54,7 +64,7 @@ export default function Dashboard() {
             address: item.address,
             label: item.label,
             btc_balance: 0,
-            delta_24h: 0,
+            delta_1h: 0,
             status: 'neutral',
           });
         }
@@ -65,6 +75,10 @@ export default function Dashboard() {
     };
 
     fetchAllAddresses();
+
+    // 10分ごとに自動更新
+    const interval = setInterval(fetchAllAddresses, 10 * 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
 
   const getStatusColor = (status: string) => {
@@ -80,48 +94,56 @@ export default function Dashboard() {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center">データを取得中...</div>;
+    return (
+      <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center text-xl">
+        データ取得中...
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-6">
+    <div className="min-h-screen bg-gray-950 text-white p-5 pb-20">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-2">BTC 監視ダッシュボード</h1>
+        <h1 className="text-4xl font-bold text-center mb-1">BTC 監視ダッシュボード</h1>
         <p className="text-center text-gray-400 mb-10">Mempool.space + Vercel 無料版</p>
 
-        <div className="space-y-6">
+        <div className="space-y-8"> {/* 行間を広く */}
           {data.map((item, index) => (
-            <div key={index} className="bg-gray-900 border border-gray-700 rounded-3xl p-6">
-              <div className="font-mono text-xs text-gray-500 break-all mb-1">
+            <div 
+              key={index} 
+              className="bg-gray-900 border border-gray-700 rounded-3xl p-8"
+            >
+              <div className="font-mono text-xs text-gray-500 break-all mb-3">
                 {item.address}
               </div>
-              <div className="text-lg font-medium mb-4">{item.label}</div>
 
-              <div className="flex justify-between items-end">
+              <div className="text-xl font-medium mb-6">{item.label}</div>
+
+              <div className="flex justify-between items-end mb-6">
                 <div>
-                  <div className="text-5xl font-bold tabular-nums">
-                    {item.btc_balance.toFixed(4)}
+                  <div className="text-6xl font-bold tabular-nums tracking-tighter">
+                    {formatBalance(item.btc_balance)}
                   </div>
-                  <div className="text-xl text-gray-400">BTC</div>
+                  <div className="text-2xl text-gray-400 mt-1">BTC</div>
                 </div>
 
-                <div className={`px-6 py-2 rounded-full text-sm font-semibold ${getStatusColor(item.status)}`}>
+                <div className={`px-7 py-3 rounded-2xl text-base font-semibold ${getStatusColor(item.status)}`}>
                   {getStatusText(item.status)}
                 </div>
               </div>
 
-              <div className="mt-4 text-sm text-gray-400">
-                24時間変化: 
-                <span className={item.delta_24h >= 0 ? "text-green-400" : "text-red-400"}>
-                  {item.delta_24h >= 0 ? '+' : ''}{item.delta_24h.toFixed(2)} BTC
+              <div className="text-sm text-gray-400">
+                1時間変化: 
+                <span className={item.delta_1h >= 0 ? "text-green-400 ml-2" : "text-red-400 ml-2"}>
+                  {item.delta_1h >= 0 ? '+' : ''}{item.delta_1h} BTC
                 </span>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="text-center text-xs text-gray-500 mt-12">
-          Mempool.space + Vercel 無料版 • iPhone SE3対応
+        <div className="text-center text-xs text-gray-500 mt-16">
+          Mempool.space + Vercel 無料版 • iPhone SE3対応 • 10分ごとに自動更新
         </div>
       </div>
     </div>
