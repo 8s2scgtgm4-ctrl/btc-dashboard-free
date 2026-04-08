@@ -99,20 +99,20 @@ export default function Dashboard() {
         <h1 className="text-4xl font-bold text-center mb-1">BTC 監視ダッシュボード</h1>
         <p className="text-center text-gray-400 mb-10">Mempool.space + Vercel 無料版</p>
 
-        <div className="space-y-10"> {/* さらに間隔を広く */}
+        <div className="space-y-12"> {/* カード間の間隔をさらに広く */}
           {data.map((item, index) => (
             <div key={index} className="bg-gray-900 border border-gray-700 rounded-3xl p-8">
               
-              {/* 新しく追加した区切りライン */}
-              <div className="h-1 bg-gradient-to-r from-transparent via-gray-400 to-transparent mb-6"></div>
+              {/* 目立つ区切りライン（緑〜シアンのグラデーション） */}
+              <div className="h-1.5 bg-gradient-to-r from-green-400 via-cyan-400 to-blue-500 rounded-full mb-8"></div>
 
-              <div className="font-mono text-xs text-gray-500 break-all mb-3">
+              <div className="font-mono text-xs text-gray-500 break-all mb-4">
                 {item.address}
               </div>
 
               <div className="text-xl font-medium mb-6">{item.label}</div>
 
-              <div className="flex justify-between items-end mb-6">
+              <div className="flex justify-between items-end mb-8">
                 <div>
                   <div className="text-6xl font-bold tabular-nums tracking-tighter">
                     {formatBalance(item.btc_balance)}
