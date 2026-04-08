@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import '../globals.css';
 
 export const metadata: Metadata = {
-  title: 'BTC 監視ダッシュボード（無料版）',
+  title: 'BTC 監視ダッシュボード',
   description: 'Mempool.spaceを使ったBTCアドレス監視ツール',
 };
 
