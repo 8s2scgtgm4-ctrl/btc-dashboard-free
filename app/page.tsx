@@ -12,11 +12,17 @@ interface AddressData {
 
 const WATCH_ADDRESSES = [
   { address: "bc1qd4ysezhmypwty5dnw7c8nqy5h5nxg0xqsvaefd0qn5kq32vwnwqqgv4rzr", label: "①最大級の匿名ウォレット" },
+  
   { address: "bc1q8yj0herd4r4yxszw3nkfvt53433thk0f5qst4g", label: "②最大級の匿名ウォレット" },
+  
   { address: "1LdRcdxfbSnmCYYNdeYpUnztiYzVfBEQeC", label: "③匿名大口の代表" },
+  
   { address: "1AC4fMwgY8j9onSbXEWeH6Zan8QGMSdmtA", label: "④匿名大口の代表" },
+  
   { address: "1LruNZjwamWJXThX2Y8C2d47QqhAkkc5os", label: "⑤匿名大口の代表" },
+  
   { address: "1NB3ZXxs3vfq1hRhuSAZ3zPdQNrXBQB6ZX", label: "⑥古株クジラ" },
+  
 ];
 
 export default function Dashboard() {
@@ -96,8 +102,8 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-950 text-white p-5 pb-20">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-1">BTC 監視ダッシュボード</h1>
-        <p className="text-center text-gray-400 mb-10">Mempool.space + Vercel</p>
+        <h1 className="text-4xl font-bold text-center mb-1">BTC 監視ダッシュボード<>
+        <p className="text-center text-gray-400 mb-10">Mempool.space + Vercel<>
 
         <div className="space-y-12">
           {data.map((item, index) => (
