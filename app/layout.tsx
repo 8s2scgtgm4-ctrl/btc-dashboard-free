@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import './globals.css';
+// globals.css のパスを修正（appフォルダから1つ上へ）
+import '../globals.css';
 
 export const metadata: Metadata = {
   title: 'BTC 監視ダッシュボード（無料版）',
