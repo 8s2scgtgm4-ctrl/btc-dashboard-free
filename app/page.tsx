@@ -6,7 +6,7 @@ interface AddressData {
   address: string;
   label: string;
   btc_balance: number;
-  delta_1h: number;     // 1時間変化量
+  delta_1h: number;
   status: 'buy' | 'neutral' | 'sell';
 }
 
@@ -43,9 +43,8 @@ export default function Dashboard() {
           const spent = json.chain_stats.spent_txo_sum || 0;
           const balance = (funded - spent) / 100000000;
 
-          // 簡易的な1時間変化量（直近のtx数を基に推定）
           const txCount1h = json.mempool_stats?.tx_count || 0;
-          const delta1h = (txCount1h * 0.0005); // 簡易推定値（実際はより正確な方法で改善可能）
+          const delta1h = (txCount1h * 0.0005);
 
           let status: 'buy' | 'neutral' | 'sell' = 'neutral';
           if (delta1h > 5) status = 'buy';
@@ -59,7 +58,6 @@ export default function Dashboard() {
             status,
           });
         } catch (error) {
-          console.error(`Error fetching ${item.address}`, error);
           results.push({
             address: item.address,
             label: item.label,
@@ -75,8 +73,6 @@ export default function Dashboard() {
     };
 
     fetchAllAddresses();
-
-    // 10分ごとに自動更新
     const interval = setInterval(fetchAllAddresses, 10 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
@@ -94,11 +90,7 @@ export default function Dashboard() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center text-xl">
-        データ取得中...
-      </div>
-    );
+    return <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center text-xl">データ取得中...</div>;
   }
 
   return (
@@ -107,12 +99,13 @@ export default function Dashboard() {
         <h1 className="text-4xl font-bold text-center mb-1">BTC 監視ダッシュボード</h1>
         <p className="text-center text-gray-400 mb-10">Mempool.space + Vercel 無料版</p>
 
-        <div className="space-y-8"> {/* 行間を広く */}
+        <div className="space-y-10"> {/* さらに間隔を広く */}
           {data.map((item, index) => (
-            <div 
-              key={index} 
-              className="bg-gray-900 border border-gray-700 rounded-3xl p-8"
-            >
+            <div key={index} className="bg-gray-900 border border-gray-700 rounded-3xl p-8">
+              
+              {/* 新しく追加した区切りライン */}
+              <div className="h-1 bg-gradient-to-r from-transparent via-gray-400 to-transparent mb-6"></div>
+
               <div className="font-mono text-xs text-gray-500 break-all mb-3">
                 {item.address}
               </div>
