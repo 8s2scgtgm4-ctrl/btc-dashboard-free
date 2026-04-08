@@ -97,14 +97,14 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-950 text-white p-5 pb-20">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-4xl font-bold text-center mb-1">BTC 監視ダッシュボード</h1>
-        <p className="text-center text-gray-400 mb-10">Mempool.space + Vercel 無料版</p>
+        <p className="text-center text-gray-400 mb-10">Mempool.space + Vercel</p>
 
-        <div className="space-y-12"> {/* カード間の間隔をさらに広く */}
+        <div className="space-y-12">
           {data.map((item, index) => (
             <div key={index} className="bg-gray-900 border border-gray-700 rounded-3xl p-8">
               
-              {/* 目立つ区切りライン（緑〜シアンのグラデーション） */}
-              <div className="h-1.5 bg-gradient-to-r from-green-400 via-cyan-400 to-blue-500 rounded-full mb-8"></div>
+              {/* 目立つ区切りライン（明るい緑の太いライン） */}
+              <div className="h-2 bg-green-500 rounded-full mb-8"></div>
 
               <div className="font-mono text-xs text-gray-500 break-all mb-4">
                 {item.address}
@@ -127,18 +127,4 @@ export default function Dashboard() {
 
               <div className="text-sm text-gray-400">
                 1時間変化: 
-                <span className={item.delta_1h >= 0 ? "text-green-400 ml-2" : "text-red-400 ml-2"}>
-                  {item.delta_1h >= 0 ? '+' : ''}{item.delta_1h} BTC
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="text-center text-xs text-gray-500 mt-16">
-          Mempool.space + Vercel 無料版 • iPhone SE3対応 • 10分ごとに自動更新
-        </div>
-      </div>
-    </div>
-  );
-}
+                <span className={item.delta_1h >= 0 ? "text-green-400 ml-2" : "
