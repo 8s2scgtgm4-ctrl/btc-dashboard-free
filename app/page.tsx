@@ -84,8 +84,8 @@ export default function Dashboard() {
   }, []);
 
   const getStatusColor = (status: string) => {
-    if (status === 'buy') return 'bg-green-600 text-white';
-    if (status === 'sell') return 'bg-red-600 text-white';
+    if (status === 'buy') return 'bg-green-600 text-red';
+    if (status === 'sell') return 'bg-red-600 text-red';
     return 'bg-yellow-500 text-black';
   };
 
@@ -102,8 +102,8 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-950 text-white p-5 pb-20">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-1">BTC 監視ダッシュボード<>
-        <p className="text-center text-gray-400 mb-10">Mempool.space + Vercel<>
+        <h1 className="text-4xl font-bold text-center mb-1">BTC 監視ダッシュボード
+        <p className="text-center text-gray-400 mb-10">Mempool.space + Vercel
 
         <div className="space-y-12">
           {data.map((item, index) => (
@@ -112,7 +112,7 @@ export default function Dashboard() {
               {/* 目立つ区切りライン（明るい緑の太いライン） */}
               <div className="h-2 bg-green-500 rounded-full mb-8"></div>
 
-              <div className="font-mono text-xs text-gray-500 break-all mb-4">
+              <div className="font-mono text-xs text-red-500 break-all mb-4">
                 {item.address}
               </div>
 
@@ -131,6 +131,6 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="text-sm text-gray-400">
+              <div className="text-sm text-red-400">
                 1時間変化: 
                 <span className={item.delta_1h >= 0 ? "text-green-400 ml-2" : "
